@@ -2,14 +2,12 @@ import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 print("OAUTHLIB_INSECURE_TRANSPORT:", os.getenv('OAUTHLIB_INSECURE_TRANSPORT'))
 
-
-from flask import Flask, request, jsonify, redirect, url_for
+from flask import Flask, request, jsonify, redirect, url_for, render_template  # Add render_template here
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 from urllib.parse import quote as url_quote
 from datetime import datetime, timedelta
-
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with a strong secret key for session management
@@ -31,8 +29,8 @@ def get_google_fit_service():
 
 
 @app.route('/')
-def index():
-    return 'Welcome to the Fitness Data Integration Service!'
+def home():
+    return render_template('index.html')
 
 @app.route('/auth', methods=['GET'])
 def authorize():
@@ -64,7 +62,12 @@ def oauth2callback():
     with open('token.json', 'w') as token:
         token.write(credentials.to_json())
 
-    return redirect(url_for('get_fitness_data'))
+    # Redirect to the dashboard after successful authentication
+    return redirect(url_for('dashboard'))
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 
 @app.route('/fitness-data', methods=['GET'])
 def get_fitness_data():
@@ -98,7 +101,7 @@ def get_active_minutes_data():
 
     # Set the time range (e.g., last 7 days)
     end_time = int(datetime.now().timestamp() * 1000000000)  # Convert to nanoseconds
-    start_time = end_time - (7 * 24 * 60 * 60 * 1000000000)  # Last 7 days
+    start_time = end_time - (1 * 24 * 60 * 60 * 1000000000)  # Last 7 days
 
     # Specify the dataStreamId for active minutes
     data_stream_id = "derived:com.google.active_minutes:com.google.android.gms:merge_active_minutes"
@@ -137,7 +140,7 @@ def get_steps_data():
 
     # Set the time range (last 7 days in this example)
     end_time = int(datetime.now().timestamp() * 1000000000)  # Convert to nanoseconds
-    start_time = end_time - (7 * 24 * 60 * 60 * 1000000000)  # Last 7 days
+    start_time = end_time - (1 * 24 * 60 * 60 * 1000000000)  # Last 7 days
 
     # Fetch the data for a specific dataStreamId
     # Replace with the actual dataStreamId you want to fetch data for
@@ -174,7 +177,7 @@ def get_calories_data():
 
     # Set the time range (e.g., last 7 days)
     end_time = int(datetime.now().timestamp() * 1000000000)  # Convert to nanoseconds
-    start_time = end_time - (7 * 24 * 60 * 60 * 1000000000)  # Last 7 days
+    start_time = end_time - (1 * 24 * 60 * 60 * 1000000000)  # Last 7 days
 
     # Specify the dataStreamId for calories expended
     data_stream_id = "derived:com.google.calories.expended:com.google.android.gms:merge_calories_expended"
