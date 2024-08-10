@@ -84,15 +84,3 @@ You can use tools like [Postman](https://www.postman.com/) or `curl` to test the
 ├── .gitignore            # Files to ignore in Git
 └── venv/                 # Virtual environment (not included in Git)
 ```
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request.
-
-## Contact
-
-For any inquiries, please contact Krish Pandya at [your email address].
